@@ -29,6 +29,7 @@ A comprehensive blockchain address analysis tool that provides detailed insights
    ```env
    ETHERSCAN_API_KEY=your_etherscan_api_key
    DEBANK_API_KEY=your_debank_api_key
+   ARCJET_API_KEY=your_arcjet_api_key
    ```
 
 4. **Run the development server**
@@ -52,6 +53,13 @@ A comprehensive blockchain address analysis tool that provides detailed insights
 2. Sign up for Pro plan
 3. Get your API key
 4. Add to `.env.local` as `DEBANK_API_KEY`
+
+### Arcjet API (Free)
+1. Visit [Arcjet API](https://arcjet.com/)
+2. Create a free account
+3. Select the framework you use
+4. Generate an API key
+5. Add to `.env.local` as `ARCJET_API_KEY`
 
 **Note**: The app works with Etherscan only (free), but DeBank provides more comprehensive data.
 
