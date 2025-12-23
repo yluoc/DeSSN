@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Download, ExternalLink, TrendingUp, Wallet, Coins, Shield } from 'lucide-react';
 import { downloadPDFReport } from '../lib/utils/pdfGenerator';
-import { apiClient } from '../lib/apiClient';
 import CreditScoreDisplay from './CreditScoreDisplay';
 
 interface UserProfileProps {
@@ -14,18 +13,59 @@ interface UserProfileProps {
   };
 }
 
+interface DeBankChain {
+  name: string;
+  community_id: number;
+}
+
+interface DeBankToken {
+  symbol: string;
+  name: string;
+  amount: number;
+  price: number;
+}
+
+interface DeBankProtocol {
+  name: string;
+  chain: string;
+  portfolio_item_list?: unknown[];
+}
+
+interface DeBankNFT {
+  name: string;
+  symbol: string;
+  amount: number;
+}
+
+interface EtherscanTransaction {
+  from: string;
+  to: string;
+  value: string;
+  timeStamp: string;
+  blockNumber: string;
+  hash: string;
+}
+
+interface TokenTransfer {
+  tokenSymbol: string;
+  tokenName: string;
+  value: string;
+  tokenDecimal: string;
+  from: string;
+}
+
 interface ProfileData {
   debank: {
-    chains: any[];
-    tokens: any[];
-    protocols: any[];
-    nfts: any[];
-    history: any[];
+    chains: DeBankChain[];
+    tokens: DeBankToken[];
+    protocols: DeBankProtocol[];
+    nfts: DeBankNFT[];
+    history: unknown[];
   };
   etherscan: {
     balance: string;
-    transactions: any[];
-    tokenTransfers: any[];
+    transactions: EtherscanTransaction[];
+    tokenTransfers: TokenTransfer[];
   };
 }
 
@@ -40,9 +80,27 @@ interface LoadingState {
   tokenTransfers: boolean;
 }
 
+interface CreditScoreResponse {
+  creditScore: {
+    creditScore: number;
+    overall: number;
+    breakdown: {
+      activity: number;
+      diversity: number;
+      longevity: number;
+      value: number;
+      protocol: number;
+    };
+  };
+  interpretation: {
+    level: string;
+    characteristics: string[];
+  };
+}
+
 export default function UserProfile({ address, selectedApis }: UserProfileProps) {
   const [data, setData] = useState<ProfileData | null>(null);
-  const [creditScoreData, setCreditScoreData] = useState<any>(null);
+  const [creditScoreData, setCreditScoreData] = useState<CreditScoreResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadingStates, setLoadingStates] = useState<LoadingState>({
     chains: true,
@@ -56,11 +114,7 @@ export default function UserProfile({ address, selectedApis }: UserProfileProps)
   });
   const [activeTab, setActiveTab] = useState('overview');
 
-  useEffect(() => {
-    fetchUserData();
-  }, [address, selectedApis]);
-
-  const fetchUserData = async () => {
+  const fetchUserData = useCallback(async () => {
     setLoading(true);
     setLoadingStates({
       chains: selectedApis.debank,
@@ -163,8 +217,26 @@ export default function UserProfile({ address, selectedApis }: UserProfileProps)
         tokenTransfers: false
       });
 
-              // Fetch credit score data after profile data is loaded
-              fetchCreditScoreData();
+      // Fetch credit score data after profile data is loaded
+      try {
+        const response = await fetch('/api/credit-score/calculate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            address,
+            selectedApis
+          })
+        });
+
+        if (response.ok) {
+          const creditScoreResult = await response.json();
+          setCreditScoreData(creditScoreResult);
+        }
+      } catch (error) {
+        console.error('Failed to fetch credit score data:', error);
+      }
 
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -187,29 +259,11 @@ export default function UserProfile({ address, selectedApis }: UserProfileProps)
     } finally {
       setLoading(false);
     }
-  };
+  }, [address, selectedApis]);
 
-  const fetchCreditScoreData = async () => {
-    try {
-      const response = await fetch('/api/credit-score/calculate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          address,
-          selectedApis
-        })
-      });
-
-      if (response.ok) {
-        const creditScoreResult = await response.json();
-        setCreditScoreData(creditScoreResult);
-      }
-    } catch (error) {
-      console.error('Failed to fetch credit score data:', error);
-    }
-  };
+  useEffect(() => {
+    fetchUserData();
+  }, [fetchUserData]);
 
   const formatBalance = (balance: string) => {
     return (parseInt(balance) / 1e18).toFixed(4);
@@ -237,7 +291,7 @@ export default function UserProfile({ address, selectedApis }: UserProfileProps)
         ethBalance: (parseInt(data.etherscan.balance) / 1e18).toFixed(4)
       },
       data,
-      creditScoreData
+      creditScoreData: creditScoreData || undefined
     };
 
     downloadPDFReport(reportData);

@@ -2,13 +2,9 @@ import 'server-only';
 import { httpGet } from '../../utils/http';
 import type { 
   EtherscanResponse, 
-  BalanceResponse, 
   Transaction, 
   BridgeTransaction, 
   TokenTransferEvent,
-  PlasmaDeposit,
-  L2DepositTransaction,
-  L2WithdrawalTransaction,
   ChainId
 } from '../../utils/utils';
 import { SUPPORTED_CHAINS } from '../../utils/utils';

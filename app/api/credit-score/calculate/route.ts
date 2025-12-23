@@ -47,7 +47,8 @@ export async function POST(request: NextRequest) {
 
     // Process Etherscan results
     if (selectedApis.etherscan) {
-      const balanceRes = results[resultIndex++];
+      // Skip balance result (not used currently)
+      resultIndex++;
       const transactionsRes = results[resultIndex++];
       const tokenTransfersRes = results[resultIndex++];
       
@@ -127,7 +128,7 @@ export async function GET(request: NextRequest) {
     const mockRequest = {
       json: () => Promise.resolve({ address, selectedApis }),
       nextUrl: { origin: request.nextUrl.origin }
-    } as any;
+    } as NextRequest;
 
     return POST(mockRequest);
 

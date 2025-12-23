@@ -1,7 +1,7 @@
 import 'server-only';
 
 // Simple in-memory cache
-const cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
+const cache = new Map<string, { data: unknown; timestamp: number; ttl: number }>();
 
 /**
  * @dev Generic GET request helper with timeout, caching, and typed JSON parsing.

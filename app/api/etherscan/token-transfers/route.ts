@@ -1,10 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { 
-  getERC20TokenTransfers,
-  getERC721TokenTransfers,
-  getERC1155TokenTransfers
-} from '../../../lib/providers/etherscan/accounts';
-import { ChainId } from '../../../lib/utils/utils';
 
 // GET /api/etherscan/token-transfers
 export async function GET(request: NextRequest) {

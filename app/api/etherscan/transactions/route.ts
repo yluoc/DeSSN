@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getNormalTransactions } from '../../../lib/providers/etherscan/accounts';
-import { ChainId } from '../../../lib/utils/utils';
 
 // GET /api/etherscan/transactions
 export async function GET(request: NextRequest) {

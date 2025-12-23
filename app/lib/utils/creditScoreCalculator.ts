@@ -1,13 +1,24 @@
 import 'server-only';
 
+interface TokenHolding {
+  contract_address?: string;
+  token_id?: string;
+  price?: number;
+  amount?: number;
+}
+
+interface Transaction {
+  timeStamp: string;
+}
+
 interface CreditScoreCalculationData {
   address: string;
-  tokenHoldings: any[];
-  transactions: any[];
-  tokenTransfers: any[];
-  protocols: any[];
-  chains: any[];
-  nfts: any[];
+  tokenHoldings: TokenHolding[];
+  transactions: Transaction[];
+  tokenTransfers: unknown[];
+  protocols: unknown[];
+  chains: unknown[];
+  nfts: unknown[];
 }
 
 interface CreditScore {
@@ -43,15 +54,15 @@ interface CreditScore {
  * - Portfolio value
  */
 export function calculateBlockchainCreditScore(data: CreditScoreCalculationData): CreditScore {
-  const { address, tokenHoldings, transactions, tokenTransfers, protocols, chains, nfts } = data;
+  const { tokenHoldings, transactions, protocols, chains, nfts } = data;
 
   // Calculate individual factors
   const factors = {
     totalTransactions: transactions.length,
     uniqueTokens: new Set(tokenHoldings.map(t => t.contract_address || t.token_id)).size,
-    activeChains: chains.length,
-    protocolInteractions: protocols.length,
-    nftCount: nfts.length,
+    activeChains: Array.isArray(chains) ? chains.length : 0,
+    protocolInteractions: Array.isArray(protocols) ? protocols.length : 0,
+    nftCount: Array.isArray(nfts) ? nfts.length : 0,
     accountAge: calculateAccountAge(transactions),
     totalValue: calculateTotalValue(tokenHoldings)
   };
@@ -94,7 +105,7 @@ export function calculateBlockchainCreditScore(data: CreditScoreCalculationData)
 /**
  * Calculate account age in days based on first transaction
  */
-function calculateAccountAge(transactions: any[]): number {
+function calculateAccountAge(transactions: Transaction[]): number {
   if (transactions.length === 0) return 0;
   
   const timestamps = transactions.map(tx => parseInt(tx.timeStamp));
@@ -107,9 +118,9 @@ function calculateAccountAge(transactions: any[]): number {
 /**
  * Calculate total portfolio value in USD
  */
-function calculateTotalValue(tokenHoldings: any[]): number {
+function calculateTotalValue(tokenHoldings: TokenHolding[]): number {
   return tokenHoldings.reduce((total, token) => {
-    const value = token.price * token.amount || 0;
+    const value = (token.price ?? 0) * (token.amount ?? 0);
     return total + value;
   }, 0);
 }

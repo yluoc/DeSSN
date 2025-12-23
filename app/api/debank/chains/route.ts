@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { 
   getUserUsedChains,
-  getUserChainBalance,
   getUserTotalBalanceAllChains
 } from '../../../lib/providers/debank/user';
 

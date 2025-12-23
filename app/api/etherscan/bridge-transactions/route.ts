@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getBridgeTransactions } from '../../../lib/providers/etherscan/accounts';
-import { SUPPORTED_CHAINS, ChainId } from '../../../lib/utils/utils';
+import { ChainId } from '../../../lib/utils/utils';
 
 // GET /api/etherscan/bridge-transactions
 export async function GET(request: NextRequest) {

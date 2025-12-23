@@ -232,7 +232,7 @@ export interface DeBankPortfolioItem {
   update_at: number;
   name: string;
   detail_types: string[];
-  detail: any;
+  detail: unknown;
 }
 
 export interface DeBankNFT {
@@ -270,7 +270,7 @@ export interface DeBankHistoryItem {
   gas_used: number;
   gas_price: number;
   gas_fee: number;
-  tx_detail: any;
+  tx_detail: unknown;
 }
 
 export interface DeBankNetCurvePoint {

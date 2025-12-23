@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { CreditCard, Activity, Layers, Clock, DollarSign, GitPullRequest, TrendingUp, TrendingDown, CheckCircle, AlertCircle } from 'lucide-react';
+import { CreditCard, Activity, Layers, Clock, DollarSign, GitPullRequest, TrendingUp, CheckCircle, AlertCircle } from 'lucide-react';
 
 interface CreditScoreDisplayProps {
   address: string;
@@ -11,8 +11,37 @@ interface CreditScoreDisplayProps {
   };
 }
 
+interface CreditScoreResponse {
+  creditScore: {
+    creditScore: number;
+    overall: number;
+    breakdown: {
+      activity: number;
+      diversity: number;
+      longevity: number;
+      value: number;
+      protocol: number;
+    };
+    factors: {
+      totalTransactions: number;
+      uniqueTokens: number;
+      activeChains: number;
+      protocolInteractions: number;
+      nftCount: number;
+      accountAge: number;
+      totalValue: number;
+    };
+  };
+  interpretation: {
+    level: string;
+    description: string;
+    characteristics: string[];
+    recommendations: string[];
+  };
+}
+
 export default function CreditScoreDisplay({ address, selectedApis }: CreditScoreDisplayProps) {
-  const [creditScoreData, setCreditScoreData] = useState<any>(null);
+  const [creditScoreData, setCreditScoreData] = useState<CreditScoreResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

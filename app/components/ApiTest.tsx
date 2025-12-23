@@ -10,8 +10,15 @@ interface ApiTestProps {
   };
 }
 
+interface TestResult {
+  status: number | string;
+  success: boolean;
+  data: unknown;
+  error: unknown;
+}
+
 export default function ApiTest({ selectedApis }: ApiTestProps) {
-  const [results, setResults] = useState<any>({});
+  const [results, setResults] = useState<Record<string, TestResult>>({});
   const [loading, setLoading] = useState(false);
 
   const testApis = async () => {
@@ -25,7 +32,7 @@ export default function ApiTest({ selectedApis }: ApiTestProps) {
       { name: 'DeBank Tokens', url: `/api/debank/tokens?address=${testAddress}&type=all`, enabled: !selectedApis || selectedApis.debank }
     ].filter(test => test.enabled);
 
-    const results: any = {};
+    const results: Record<string, TestResult> = {};
     
     for (const test of tests) {
       try {
@@ -66,7 +73,7 @@ export default function ApiTest({ selectedApis }: ApiTestProps) {
       
       {Object.keys(results).length > 0 && (
         <div className="mt-4 space-y-2">
-          {Object.entries(results).map(([name, result]: [string, any]) => (
+          {Object.entries(results).map(([name, result]) => (
             <div key={name} className={`p-3 rounded-lg ${result.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
               <div className="flex justify-between items-center">
                 <span className="font-medium">{name}</span>
@@ -77,14 +84,14 @@ export default function ApiTest({ selectedApis }: ApiTestProps) {
               <div className="text-sm text-gray-600 mt-1">
                 Status: {result.status}
               </div>
-              {result.error && (
+              {result.error != null && (
                 <div className="text-sm text-red-600 mt-1">
-                  Error: {JSON.stringify(result.error)}
+                  Error: {typeof result.error === 'string' ? result.error : JSON.stringify(result.error)}
                 </div>
               )}
-              {result.data && (
+              {result.data != null && (
                 <div className="text-sm text-green-600 mt-1">
-                  Data: {JSON.stringify(result.data).substring(0, 100)}...
+                  Data: {typeof result.data === 'string' ? result.data.substring(0, 100) : JSON.stringify(result.data).substring(0, 100)}...
                 </div>
               )}
             </div>

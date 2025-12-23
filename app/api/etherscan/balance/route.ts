@@ -1,19 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { 
-  getEtherBalance,
-  getBridgeTransactions,
-  getNormalTransactions,
-  getInternalTransactions,
-  getERC20TokenTransfers,
-  getERC721TokenTransfers,
-  getERC1155TokenTransfers
+  getEtherBalance
 } from '../../../lib/providers/etherscan/accounts';
-import { SUPPORTED_CHAINS, ChainId } from '../../../lib/utils/utils';
-import { 
-  getPlasmaDeposits,
-  getDepositTransactions,
-  getWithdrawalTransactions
-} from '../../../lib/providers/etherscan/l2-functions';
+import { ChainId } from '../../../lib/utils/utils';
 
 // GET /api/etherscan/balance
 export async function GET(request: NextRequest) {

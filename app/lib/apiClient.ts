@@ -13,8 +13,8 @@ interface RequestOptions {
 }
 
 class ApiClient {
-  private cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
-  private pendingRequests = new Map<string, Promise<any>>();
+  private cache = new Map<string, { data: unknown; timestamp: number; ttl: number }>();
+  private pendingRequests = new Map<string, Promise<unknown>>();
 
   private async makeRequest<T>(
     url: string, 
@@ -26,13 +26,13 @@ class ApiClient {
     if (cache) {
       const cached = this.cache.get(url);
       if (cached && Date.now() - cached.timestamp < cached.ttl) {
-        return cached.data;
+        return cached.data as T;
       }
     }
 
     // Check if request is already pending
     if (this.pendingRequests.has(url)) {
-      return this.pendingRequests.get(url)!;
+      return this.pendingRequests.get(url)! as Promise<T>;
     }
 
     const requestPromise = this.executeRequest<T>(url, timeout, retries);
@@ -102,7 +102,7 @@ class ApiClient {
   }
 
   // DeBank API methods
-  async getUserUsedChains(address: string): Promise<ApiResponse<any>> {
+  async getUserUsedChains(address: string): Promise<ApiResponse<unknown>> {
     try {
       const data = await this.makeRequest(`/api/debank/chains?address=${address}&type=used`);
       return { data, loading: false, error: null };
@@ -111,7 +111,7 @@ class ApiClient {
     }
   }
 
-  async getUserTokenList(address: string): Promise<ApiResponse<any>> {
+  async getUserTokenList(address: string): Promise<ApiResponse<unknown>> {
     try {
       const data = await this.makeRequest(`/api/debank/tokens?address=${address}&type=all`);
       return { data, loading: false, error: null };
@@ -120,7 +120,7 @@ class ApiClient {
     }
   }
 
-  async getUserProtocols(address: string): Promise<ApiResponse<any>> {
+  async getUserProtocols(address: string): Promise<ApiResponse<unknown>> {
     try {
       const data = await this.makeRequest(`/api/debank/protocols?address=${address}&type=complex-all`);
       return { data, loading: false, error: null };
@@ -129,7 +129,7 @@ class ApiClient {
     }
   }
 
-  async getUserNFTs(address: string): Promise<ApiResponse<any>> {
+  async getUserNFTs(address: string): Promise<ApiResponse<unknown>> {
     try {
       const data = await this.makeRequest(`/api/debank/nfts?address=${address}`);
       return { data, loading: false, error: null };
@@ -138,7 +138,7 @@ class ApiClient {
     }
   }
 
-  async getUserHistory(address: string): Promise<ApiResponse<any>> {
+  async getUserHistory(address: string): Promise<ApiResponse<unknown>> {
     try {
       const data = await this.makeRequest(`/api/debank/history?address=${address}&type=all`);
       return { data, loading: false, error: null };
@@ -148,7 +148,7 @@ class ApiClient {
   }
 
   // Etherscan API methods
-  async getEtherBalance(address: string): Promise<ApiResponse<any>> {
+  async getEtherBalance(address: string): Promise<ApiResponse<unknown>> {
     try {
       const data = await this.makeRequest(`/api/etherscan/balance?address=${address}`);
       return { data, loading: false, error: null };
@@ -157,7 +157,7 @@ class ApiClient {
     }
   }
 
-  async getTransactions(address: string): Promise<ApiResponse<any>> {
+  async getTransactions(address: string): Promise<ApiResponse<unknown>> {
     try {
       const data = await this.makeRequest(`/api/etherscan/transactions?address=${address}&offset=20`);
       return { data, loading: false, error: null };
@@ -166,7 +166,7 @@ class ApiClient {
     }
   }
 
-  async getTokenTransfers(address: string): Promise<ApiResponse<any>> {
+  async getTokenTransfers(address: string): Promise<ApiResponse<unknown>> {
     try {
       const data = await this.makeRequest(`/api/etherscan/token-transfers?address=${address}&tokenType=erc20&offset=20`);
       return { data, loading: false, error: null };

@@ -14,15 +14,6 @@ export default function SearchPage() {
     debank: false
   });
 
-  const handleSearch = () => {
-    if (!address.trim()) return;
-    if (!selectedApis.etherscan && !selectedApis.debank) {
-      alert('Please select at least one data source (Etherscan or DeBank)');
-      return;
-    }
-    console.log('Searching for address:', address.trim());
-    setSearchAddress(address.trim());
-  };
 
   const handleWalletAddressChange = (walletAddress: string) => {
     if (walletAddress) {
@@ -179,14 +170,14 @@ export default function SearchPage() {
                 <div className="bg-white rounded-lg p-4 border border-blue-200">
                   <h4 className="font-semibold text-blue-900 mb-2">🔗 Connect Your Wallet</h4>
                   <p className="text-sm text-blue-700">
-                    Click "Connect Wallet" in the top right corner to automatically analyze your own blockchain activity
+                    Click &quot;Connect Wallet&quot; in the top right corner to automatically analyze your own blockchain activity
                   </p>
                 </div>
                 
                 <div className="bg-white rounded-lg p-4 border border-blue-200">
                   <h4 className="font-semibold text-blue-900 mb-2">🔍 Search Any Address</h4>
                   <p className="text-sm text-blue-700">
-                    Enter any blockchain address (0x...) to analyze someone else's activity
+                    Enter any blockchain address (0x...) to analyze someone else&apos;s activity
                   </p>
                 </div>
               </div>

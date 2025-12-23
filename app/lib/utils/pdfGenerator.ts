@@ -10,8 +10,37 @@ interface ReportData {
     totalNFTs: number;
     ethBalance: string;
   };
-  data: any;
-  creditScoreData?: any;
+  data: {
+    debank: {
+      chains: Array<{ name: string; community_id: number }>;
+      tokens: Array<{ symbol: string; amount: number }>;
+      protocols: unknown[];
+      nfts: unknown[];
+      history: unknown[];
+    };
+    etherscan: {
+      balance: string;
+      transactions: unknown[];
+      tokenTransfers: unknown[];
+    };
+  };
+  creditScoreData?: {
+    creditScore: {
+      creditScore: number;
+      overall: number;
+      breakdown: {
+        activity: number;
+        diversity: number;
+        longevity: number;
+        value: number;
+        protocol: number;
+      };
+    };
+    interpretation: {
+      level: string;
+      characteristics: string[];
+    };
+  };
 }
 
 export function generatePDFReport(reportData: ReportData) {
@@ -73,7 +102,7 @@ export function generatePDFReport(reportData: ReportData) {
     doc.text('Active Chains', 20, 155);
     
     doc.setFontSize(10);
-    reportData.data.debank.chains.forEach((chain: any, index: number) => {
+    reportData.data.debank.chains.forEach((chain, index: number) => {
       if (155 + (index + 1) * 10 < 280) {
         doc.text(`• ${chain.name} (ID: ${chain.community_id})`, 20, 165 + index * 10);
       }
@@ -86,7 +115,7 @@ export function generatePDFReport(reportData: ReportData) {
     doc.text('Token Holdings', 20, 200);
     
     doc.setFontSize(10);
-    reportData.data.debank.tokens.slice(0, 10).forEach((token: any, index: number) => {
+    reportData.data.debank.tokens.slice(0, 10).forEach((token, index: number) => {
       if (200 + (index + 1) * 10 < 280) {
         doc.text(`• ${token.symbol}: ${token.amount.toFixed(4)}`, 20, 210 + index * 10);
       }
